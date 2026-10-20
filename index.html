@@ -168,17 +168,50 @@
   }
 
   /* ---------- 결과 화면 ---------- */
-  .result-card{width:100%;max-width:560px;background:var(--panel);border-radius:26px;box-shadow:var(--shadow);padding:34px 30px;text-align:center;}
-  .trophy{font-size:52px;line-height:1;}
-  .result-title{font-size:28px;font-weight:900;margin:10px 0 22px;letter-spacing:-.02em;}
-  .rank-list{display:flex;flex-direction:column;gap:10px;margin-bottom:26px;text-align:left;}
-  .rank-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--bg2);border:1.5px solid var(--line);}
-  .rank-row.first{background:#FFF8E1;border-color:#F5C84B;}
-  .rank-no{font-size:22px;width:30px;text-align:center;}
-  .rank-name{font-weight:800;font-size:16px;flex:1;}
-  .rank-stat{font-size:13px;color:var(--muted);text-align:right;line-height:1.5;}
-  .rank-stat b{color:var(--ink);font-size:15px;}
-  .sd-tag{display:inline-block;font-size:11px;font-weight:800;color:#B7791F;background:#FFF3D6;border-radius:99px;padding:2px 8px;margin-left:6px;vertical-align:middle;}
+  .result-screen{--wc:#2F6BFF;--wc2:#1E4FD8;min-height:100vh;min-height:100dvh;display:flex;align-items:center;justify-content:center;padding:24px 16px;position:relative;overflow:hidden;
+                 background:radial-gradient(900px 520px at 50% -10%, color-mix(in srgb, var(--wc) 28%, transparent), transparent 70%), var(--bg);}
+  #confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:5;}
+  .result-wrap{width:100%;max-width:760px;position:relative;z-index:2;display:flex;flex-direction:column;gap:14px;}
+
+  .win-hero{position:relative;overflow:hidden;border-radius:30px;padding:24px 24px 24px;text-align:center;color:#fff;
+            background:linear-gradient(135deg,var(--wc),var(--wc2));box-shadow:0 26px 60px -22px var(--wc);animation:heroIn .7s cubic-bezier(.2,.9,.3,1.15) both;}
+  .win-hero::before{content:"";position:absolute;left:50%;top:50%;width:1400px;height:1400px;margin:-700px 0 0 -700px;
+            background:repeating-conic-gradient(rgba(255,255,255,.09) 0 10deg, transparent 10deg 20deg);animation:spin 40s linear infinite;}
+  .win-hero > *{position:relative;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes heroIn{from{transform:scale(.85) translateY(20px);opacity:0;}to{transform:none;opacity:1;}}
+  .win-chip{display:inline-block;font-size:13px;font-weight:900;letter-spacing:.12em;background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);
+            padding:6px 14px;border-radius:99px;}
+  .win-name{font-size:clamp(44px,7vw,76px);font-weight:900;letter-spacing:-.03em;line-height:1.05;margin:10px 0 10px;text-shadow:0 6px 24px rgba(0,0,0,.18);}
+  .win-sub{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  .win-sub span{background:rgba(255,255,255,.18);border-radius:12px;padding:7px 12px;font-size:14px;font-weight:700;}
+  .win-sub b{font-size:17px;font-weight:900;}
+
+  .podium{display:flex;justify-content:center;align-items:flex-end;gap:14px;padding:6px 0 0;}
+  .pod{width:min(30%,170px);text-align:center;display:flex;flex-direction:column;align-items:center;}
+  .pod-medal{font-size:30px;line-height:1;margin-bottom:6px;}
+  .pod-name{font-size:17px;font-weight:900;color:var(--ink);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .pod-score{font-size:14px;font-weight:800;color:var(--muted);margin:2px 0 8px;}
+  .pod-bar{width:100%;border-radius:18px 18px 8px 8px;background:linear-gradient(180deg,var(--pc),var(--pc2));color:#fff;
+           display:flex;align-items:flex-start;justify-content:center;padding-top:12px;font-size:34px;font-weight:900;
+           box-shadow:0 14px 30px -14px var(--pc);transform-origin:bottom;animation:grow .8s cubic-bezier(.2,.9,.3,1.1) both;}
+  @keyframes grow{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+
+  .result-table{background:var(--panel);border-radius:20px;box-shadow:var(--shadow);overflow:hidden;}
+  .rt-row{display:grid;grid-template-columns:44px 1fr 70px 80px 92px;align-items:center;padding:12px 18px;gap:8px;font-size:15px;}
+  .rt-row + .rt-row{border-top:1px solid var(--line);}
+  .rt-head{font-size:12px;font-weight:800;color:var(--muted);background:var(--bg2);padding:9px 18px;}
+  .rt-row .c{text-align:right;font-weight:800;}
+  .rt-rank{font-size:20px;text-align:center;}
+  .rt-name{font-weight:800;display:flex;align-items:center;gap:8px;min-width:0;}
+  .rt-name i{width:10px;height:10px;border-radius:50%;flex:none;}
+  .sd-tag{display:inline-block;font-size:11px;font-weight:800;color:#B7791F;background:#FFF3D6;border-radius:99px;padding:2px 8px;white-space:nowrap;}
+  .result-actions{text-align:center;}
+  .btn.again{background:var(--ink);color:#fff;border:none;box-shadow:0 10px 24px -10px rgba(20,32,51,.6);}
+  @media (max-width:560px){
+    .rt-row{grid-template-columns:30px 1fr 46px 50px 58px;font-size:13px;padding:10px 12px;}
+    .sd-tag{display:none;}
+  }
 
   /* ---------- 점수/정답 공개 ---------- */
   .dots span.miss{background:var(--red);opacity:.7;}
@@ -299,18 +332,26 @@
 </div>
 
 <!-- 결과 화면 -->
-<div class="center-wrap hidden" id="resultScreen">
-  <div class="result-card">
-    <div class="trophy">🏆</div>
-    <div class="result-title" id="resultTitle"></div>
-    <div class="rank-list" id="rankList"></div>
-    <button class="btn primary big" onclick="location.reload()">다시 하기</button>
+<div class="result-screen hidden" id="resultScreen">
+  <canvas id="confetti"></canvas>
+  <div class="result-wrap">
+    <div class="win-hero" id="winHero">
+      <div class="win-chip" id="winChip">🏆 CHAMPION</div>
+      <div class="win-name" id="resultTitle"></div>
+      <div class="win-sub" id="winSub"></div>
+    </div>
+    <div class="podium" id="podium"></div>
+    <div class="result-table" id="rankList"></div>
+    <div class="result-actions">
+      <button class="btn big again" onclick="location.reload()">다시 하기</button>
+    </div>
   </div>
 </div>
 
 <script>
 const TEAM_LETTERS = ['A','B','C'];
 const CIRCLED = ['①','②','③','④','⑤'];
+const TEAM_COLORS = { A:['#2F6BFF','#1E4FD8'], B:['#FF7A2F','#E5531A'], C:['#8B5CF6','#6D3FE0'] };
 const WRONG_PENALTY = 10;
 const N_QUESTIONS = 10;
 const MAX_POINTS = N_QUESTIONS * 2;
@@ -835,23 +876,85 @@ function showResult(winners){
   const ranked = TEAMS.slice().sort((a,b)=> (isWin(b)-isWin(a)) || compareMain(a,b));
   const same = (a,b) => isWin(a)===isWin(b) && compareMain(a,b)===0;
   const sdUsed = sd.round > 0;
+  const soloSd = sdUsed && winners.length===1;
 
-  document.getElementById('resultTitle').textContent = winners.length>1
-    ? winners.map(t=>names[t]).join(', ') + ' 공동 우승!'
-    : names[winners[0]] + ' 우승!';
-
-  const medals = ['🥇','🥈','🥉'];
+  // 순위 계산 (동점이면 같은 순위)
+  const ranks = {};
   let rank = 0;
-  document.getElementById('rankList').innerHTML = ranked.map((t,i)=>{
-    if(i>0 && !same(t, ranked[i-1])) rank = i;
-    const s = state[t];
-    const tag = sdUsed && isWin(t) && winners.length===1 ? '<span class="sd-tag">서든데스 승리</span>' : '';
-    return `<div class="rank-row ${rank===0?'first':''}">
-      <div class="rank-no">${medals[rank]}</div>
-      <div class="rank-name">${escapeHtml(names[t])}${tag}</div>
-      <div class="rank-stat"><b>${s.points}</b>점 · 한 번에 <b>${s.firstTry}</b>개<br>남은 시간 <b class="mono">${fmtTime(s.bank)}</b></div>
-    </div>`;
-  }).join('');
+  ranked.forEach((t,i)=>{ if(i>0 && !same(t, ranked[i-1])) rank = i; ranks[t] = rank; });
+
+  // 우승팀 색으로 화면 물들이기 (공동 우승이면 두 팀 색을 섞음)
+  const screen = document.getElementById('resultScreen');
+  screen.style.setProperty('--wc', TEAM_COLORS[winners[0]][0]);
+  screen.style.setProperty('--wc2', winners.length>1 ? TEAM_COLORS[winners[1]][0] : TEAM_COLORS[winners[0]][1]);
+
+  // 히어로
+  const w = state[winners[0]];
+  document.getElementById('winChip').textContent = winners.length>1 ? '🏆 공동 우승' : (soloSd ? '⚡ 서든데스 승리' : '🏆 우승');
+  document.getElementById('resultTitle').textContent = winners.map(t=>names[t]).join(' · ');
+  document.getElementById('winSub').innerHTML =
+    `<span>점수 <b>${w.points}</b> / ${MAX_POINTS}</span>`
+    + `<span>한 번에 맞힘 <b>${w.firstTry}</b>개</span>`
+    + `<span>남은 시간 <b class="mono">${fmtTime(w.bank)}</b></span>`;
+
+  // 시상대: 2등-1등-3등 순서로 배치
+  const medals = ['🥇','🥈','🥉'];
+  const heights = [140, 100, 70];
+  const podOrder = ranked.length===3 ? [ranked[1], ranked[0], ranked[2]] : [ranked[1], ranked[0]];
+  document.getElementById('podium').innerHTML = podOrder.map((t,i)=>`
+    <div class="pod" style="--pc:${TEAM_COLORS[t][0]};--pc2:${TEAM_COLORS[t][1]}">
+      <div class="pod-medal">${medals[ranks[t]]}</div>
+      <div class="pod-name">${escapeHtml(names[t])}</div>
+      <div class="pod-score">${state[t].points}점</div>
+      <div class="pod-bar" style="height:${heights[ranks[t]]}px;animation-delay:${0.15+i*0.12}s">${ranks[t]+1}</div>
+    </div>`).join('');
+
+  // 상세 기록 표
+  document.getElementById('rankList').innerHTML =
+    `<div class="rt-row rt-head"><div></div><div>팀</div><div class="c">점수</div><div class="c">한 번에</div><div class="c">남은 시간</div></div>`
+    + ranked.map(t=>{
+      const s = state[t];
+      const tag = soloSd && isWin(t) ? '<span class="sd-tag">서든데스 승리</span>' : '';
+      return `<div class="rt-row">
+        <div class="rt-rank">${medals[ranks[t]]}</div>
+        <div class="rt-name"><i style="background:${TEAM_COLORS[t][0]}"></i>${escapeHtml(names[t])}${tag}</div>
+        <div class="c">${s.points}점</div>
+        <div class="c">${s.firstTry}개</div>
+        <div class="c mono">${fmtTime(s.bank)}</div>
+      </div>`;
+    }).join('');
+
+  launchConfetti(winners.flatMap(t=>TEAM_COLORS[t]).concat(['#FFD54A','#FFFFFF']));
+}
+
+// ----- 축하 꽃가루 -----
+function launchConfetti(colors){
+  const cv = document.getElementById('confetti');
+  const ctx = cv.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const resize = ()=>{ cv.width = innerWidth*dpr; cv.height = innerHeight*dpr; ctx.setTransform(dpr,0,0,dpr,0,0); };
+  resize(); addEventListener('resize', resize);
+  const pieces = Array.from({length:180}, ()=>({
+    x: Math.random()*innerWidth, y: -20 - Math.random()*innerHeight*0.8,
+    w: 6+Math.random()*7, h: 9+Math.random()*9,
+    vx: -1.5+Math.random()*3, vy: 2+Math.random()*3.5,
+    rot: Math.random()*Math.PI, vr: -0.15+Math.random()*0.3,
+    c: colors[Math.floor(Math.random()*colors.length)]
+  }));
+  const start = performance.now(), DURATION = 5000;
+  (function frame(now){
+    const el = now - start;
+    ctx.clearRect(0,0,innerWidth,innerHeight);
+    ctx.globalAlpha = el < DURATION-1000 ? 1 : Math.max(0, (DURATION-el)/1000);
+    pieces.forEach(p=>{
+      p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.vx += Math.sin((el+p.h*100)/400)*0.03;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle = p.c;
+      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.rot)));
+      ctx.restore();
+    });
+    if(el < DURATION) requestAnimationFrame(frame);
+    else ctx.clearRect(0,0,innerWidth,innerHeight);
+  })(start);
 }
 </script>
 </body>
