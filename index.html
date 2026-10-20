@@ -197,6 +197,18 @@
   .overlay-card h2{font-size:24px;font-weight:900;margin:10px 0 8px;letter-spacing:-.02em;}
   .overlay-card p{font-size:14.5px;color:#3A4A60;line-height:1.75;margin:0 0 22px;}
   body.sd .turn-banner{background:linear-gradient(135deg,#F59E0B,#EF4444);}
+
+  /* ---------- 차례 전환 알림 ---------- */
+  .turn-splash{position:fixed;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+               background:rgba(15,23,42,.28);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+               animation:splashBg 1.4s ease forwards;pointer-events:all;}
+  .turn-splash .splash-card{background:var(--team);color:#fff;border-radius:32px;padding:clamp(28px,5vw,48px) clamp(44px,8vw,96px);text-align:center;
+               box-shadow:0 30px 80px -20px var(--team);animation:splashCard 1.4s cubic-bezier(.2,.9,.3,1.2) forwards;}
+  body.sd .turn-splash .splash-card{background:linear-gradient(135deg,#F59E0B,#EF4444);box-shadow:0 30px 80px -20px #EF4444;}
+  .splash-name{font-size:clamp(56px,11vw,120px);font-weight:900;letter-spacing:-.03em;line-height:1.05;}
+  .splash-sub{font-size:clamp(18px,2.6vw,26px);font-weight:800;opacity:.92;margin-top:8px;}
+  @keyframes splashBg{0%{opacity:0;}12%{opacity:1;}82%{opacity:1;}100%{opacity:0;}}
+  @keyframes splashCard{0%{transform:scale(.6);opacity:0;}18%{transform:scale(1);opacity:1;}82%{transform:scale(1);opacity:1;}100%{transform:scale(1.08);opacity:0;}}
 </style>
 </head>
 <body data-team="A">
@@ -268,6 +280,14 @@
   </main>
 </div>
 
+<!-- 차례 전환 알림 -->
+<div class="turn-splash hidden" id="turnSplash">
+  <div class="splash-card">
+    <div class="splash-name" id="splashName"></div>
+    <div class="splash-sub" id="splashSub"></div>
+  </div>
+</div>
+
 <!-- 서든데스 안내창 -->
 <div class="overlay hidden" id="overlay">
   <div class="overlay-card">
@@ -318,6 +338,8 @@ let roundLocked = false;
 let gameOver = false;
 let phase = 'main';   // main: 본 게임, sd: 서든데스
 let sd = { teams:[], round:0, order:[], pos:0, pass:[] };
+let lastTurnTeam = null;   // 차례가 바뀔 때만 알림을 띄우기 위해 기억
+const SPLASH_MS = 1400;
 
 function setTeamCount(n){
   document.querySelectorAll('#teamCountRow button').forEach(b=>b.classList.toggle('active', parseInt(b.dataset.n)===n));
@@ -624,8 +646,26 @@ function loadQuestion(){
   updateTurnBanner();
   updateScoreDisplay();
   updateClocks();
-  roundLocked = false;
-  startClock();
+  const begin = ()=>{ roundLocked = false; startClock(); };
+  if(t !== lastTurnTeam){
+    // 팀이 바뀌면 가운데에 큰 알림 → 알림이 끝난 뒤에 시계 시작
+    lastTurnTeam = t;
+    roundLocked = true;
+    showTurnSplash(t, s, begin);
+  } else {
+    begin();
+  }
+}
+
+function showTurnSplash(t, s, done){
+  const el = document.getElementById('turnSplash');
+  document.getElementById('splashName').textContent = names[t];
+  document.getElementById('splashSub').textContent = phase==='sd'
+    ? `서든데스 ${sd.round}라운드`
+    : `차례예요! · ${s.qIndex+1}번 문제`;
+  // 애니메이션을 처음부터 다시 재생
+  el.classList.add('hidden'); void el.offsetWidth; el.classList.remove('hidden');
+  setTimeout(()=>{ el.classList.add('hidden'); done(); }, SPLASH_MS);
 }
 
 function optionButtons(){ return [...document.querySelectorAll('#board .option-btn')]; }
@@ -747,6 +787,7 @@ function startSuddenDeath(tied){
 
 function nextSdRound(){
   sd.round += 1;
+  lastTurnTeam = null;   // 새 라운드는 첫 팀도 알림 표시
   sd.order = sd.teams.slice();
   sd.pos = 0;
   sd.pass = [];
